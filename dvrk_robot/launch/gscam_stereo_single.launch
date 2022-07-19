@@ -1,0 +1,27 @@
+<!-- -*- mode: XML -*- -->
+
+<launch>
+  <!--  -->
+  <arg name="camera_name" default="camera"/>
+  <arg name="camera_info_url" default="package://dvrk_config/$(arg camera_name)_camera_parameters.yaml"/>
+  <arg name="connection" default="sdi"/>
+  <arg name="device" default="0"/>
+  <arg name="crop_top" default="0"/>
+  <arg name="crop_left" default="0"/>
+  <arg name="crop_bottom" default="0"/>
+  <arg name="crop_right" default="0"/>
+  <arg name="frame_id" default="$(arg camera_name)_frame"/>
+
+  <!-- gscam uses /<camera>/camera_info and /set_camera_info, remapping to avoid collisions when using multple cameras -->
+  <remap from="set_camera_info" to="$(arg camera_name)/set_camera_info"/>
+
+  <node name="$(arg camera_name)" pkg="gscam" type="gscam" output="screen">
+    <param name="camera_name" value="$(arg camera_name)"/>
+    <param name="camera_info_url" value="$(arg camera_info_url)"/>
+    <param name="gscam_config" value="decklinkvideosrc connection=$(arg connection) device-number=$(arg device) ! videocrop top=$(arg crop_top) left=$(arg crop_left) right=$(arg crop_right) bottom=$(arg crop_bottom) ! videoconvert"/>
+    <param name="frame_id" value="$(arg frame_id)"/>
+    <!-- This needs to be set to false to avoid dropping tons of frames -->
+    <param name="sync_sink" value="false"/>
+  </node>
+
+</launch>

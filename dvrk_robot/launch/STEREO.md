@@ -9,7 +9,7 @@
 - Launch stereo pipeline: `roslaunch dvrk_robot rviz_stereo_pipeline.launch rig_name:=jhu_daVinci`
 - Run a stereo camera calibration, see [ROS camera_calibration](https://wiki.ros.org/camera_calibration).
   - Make sure to add flag `--approximate=0.05` when running `cameracalibrator.py`. Since the two gscam nodes aren't synchronized, this is needed to tell the camera calibration to consider frames to be simultaneous even if the timestamps aren't quite identical.
-  - Depending on board used, your command should be something like `rosrun camera_calibration cameracalibrator.py --size 12x10 --square 0.45 --aproximate=0.05 right:=/jhu_daVinci/right/image_raw left:=/jhu_daVinci/left/image_raw left_camera:=/jhu_daVinci/left right_camera:=/jhu_daVinci/right`
+  - Depending on board used, your command should be something like `rosrun camera_calibration cameracalibrator.py --size 12x10 --square 0.45 --approximate=0.05 right:=/jhu_daVinci/right/image_raw left:=/jhu_daVinci/left/image_raw left_camera:=/jhu_daVinci/left right_camera:=/jhu_daVinci/right`
 
 ## Running stereo pipeline
 

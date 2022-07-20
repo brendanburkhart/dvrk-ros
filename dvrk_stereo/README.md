@@ -15,6 +15,8 @@
 
 - Launch stereo pipeline: `roslaunch dvrk_robot rviz_stereo_pipeline.launch rig_name:=jhu_daVinci`
 
+If calibration was performed, this will, in addition to the default `<rig_name>/<left or right>/image_raw>`, provide `<rig_name>/<left or right>/image_rect_color` which are colorized and rectified/undistorted images.
+
 RViz should open and display the stereo cameras as separate views, with the test marker visible. If you want to view the stereo cameras in an existing RViz set up, add two cameras to the display, set their input source to `jhu_daVinci/<side>/image_rect_color`, set `Overlay Alpha` to 0.0, and disable visibility of anything you don't won't the cameras to render, e.g. TF transforms, or the grid.
 
 The `rviz_stereo_pipeline.launch` launch file publishes a base transform named `<rig_name>_stereo_base` that the stereo cameras will positions themselves relative to. If you want to change the position of the cameras, simply modify the `static_transform_publisher` args in the launch file, or delete that node and publish the desired transforms yourself.

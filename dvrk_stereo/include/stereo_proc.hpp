@@ -6,6 +6,7 @@
 
 #include <ros/ros.h>
 #include <image_transport/image_transport.h>
+#include <opencv2/core/types.hpp>
 
 namespace dvrk_stereo {
 
@@ -23,6 +24,8 @@ public:
     void imageCallback(image_transport::Publisher& publisher, const sensor_msgs::ImageConstPtr& image_msg);
 
 private:
+    cv::Rect computeCropRegion(int in_width, int in_height);
+
     int desired_image_width;
     int desired_image_height;
     std::string input_camera;

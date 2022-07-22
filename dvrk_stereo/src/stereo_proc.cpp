@@ -26,7 +26,6 @@ void StereoImageProcessor::init() {
         ROS_ERROR("Required parameter '_camera' not specified");
     }
 
-    //auto left_connect_info = std::bind(&StereoImageProcessor::connectInfoCallback, this, left_info_publisher, left_info_subscriber, "left");
     auto left_connect_info = [&](const ros::SingleSubscriberPublisher& _) { connectInfoCallback(left_info_publisher, left_info_subscriber, "left"); };
     auto right_connect_info = [&](const ros::SingleSubscriberPublisher& _) { connectInfoCallback(right_info_publisher, right_info_subscriber, "right"); };
     auto left_connect_image = [&](const image_transport::SingleSubscriberPublisher& _) { connectImageCallback(left_image_publisher, left_image_subscriber, "left"); };
@@ -64,6 +63,28 @@ void StereoImageProcessor::connectImageCallback(image_transport::Publisher& publ
     }
 }
 
+cv::Rect StereoImageProcessor::computeCropRegion(int in_width, int in_height) {
+    double desired_aspect_ratio = static_cast<double>(desired_image_width)/static_cast<double>(desired_image_height);
+    double current_aspect_ratio = static_cast<double>(in_width)/static_cast<double>(in_height);
+   
+    int crop_x = 0;
+    int crop_y = 0;
+    int out_width = in_width;
+    int out_height = in_height;
+ 
+    // Want image to be narrower, crop width
+    if (desired_aspect_ratio < current_aspect_ratio) {
+        out_width = desired_aspect_ratio * in_height;
+        crop_x = (in_width - out_width)/2;
+    // Want image to be shorter, crop height
+    } else {
+        out_height = in_width/desired_aspect_ratio;
+        crop_y = (in_height - out_height)/2;
+    }
+
+    return cv::Rect(crop_x, crop_y, out_width, out_height);
+}
+
 void StereoImageProcessor::infoCallback(ros::Publisher& publisher, const sensor_msgs::CameraInfoConstPtr& info_msg) {
     bool no_desired_size = (desired_image_width == 0) || (desired_image_height == 0);
     bool correct_size = (info_msg->width == desired_image_width) && (info_msg->height == desired_image_height);
@@ -73,29 +94,13 @@ void StereoImageProcessor::infoCallback(ros::Publisher& publisher, const sensor_
         return;
     }
 
-    double desired_aspect_ratio = static_cast<double>(desired_image_width)/static_cast<double>(desired_image_height);
-    double current_aspect_ratio = static_cast<double>(info_msg->width)/static_cast<double>(info_msg->height);
-   
-    int crop_x = 0;
-    int crop_y = 0;
-    int width = info_msg->width;
-    int height = info_msg->height;
- 
-    // Want image to be narrower, crop width
-    if (desired_aspect_ratio < current_aspect_ratio) {
-        width = desired_aspect_ratio*info_msg->height;
-        crop_x = (info_msg->width - width)/2;
-    // Want image to be shorter, crop height
-    } else {
-        height = info_msg->width/desired_aspect_ratio;
-        crop_y = (info_msg->height - height)/2;
-    }
+    cv::Rect crop = computeCropRegion(info_msg->width, info_msg->height);
 
     sensor_msgs::CameraInfoPtr resized_info(new sensor_msgs::CameraInfo(*info_msg));
-    double scale_x = static_cast<double>(desired_image_width)/static_cast<double>(width);
-    int offset_x = static_cast<int>(-crop_x * scale_x);
-    double scale_y = static_cast<double>(desired_image_height)/static_cast<double>(height);
-    int offset_y = static_cast<int>(-crop_y * scale_y);
+    double scale_x = static_cast<double>(desired_image_width)/static_cast<double>(crop.width);
+    int offset_x = static_cast<int>(-crop.x * scale_x);
+    double scale_y = static_cast<double>(desired_image_height)/static_cast<double>(crop.height);
+    int offset_y = static_cast<int>(-crop.y * scale_y);
     
     resized_info->width = desired_image_width;
     resized_info->height = desired_image_height;
@@ -109,7 +114,7 @@ void StereoImageProcessor::infoCallback(ros::Publisher& publisher, const sensor_
     // Entries other than 0, 2, 3, 5, 6 are 0.0
     resized_info->P[0] = info_msg->P[0] * scale_x;            // fx
     resized_info->P[2] = info_msg->P[2] * scale_x + offset_x; // cx
-    resized_info->P[3] = info_msg->P[3] * scale_x + offset_x; // Tx
+    resized_info->P[3] = info_msg->P[3] * scale_x;            // Tx = fx*baseline
     resized_info->P[5] = info_msg->P[5] * scale_y;            // fy
     resized_info->P[6] = info_msg->P[6] * scale_y + offset_y; // cy
 
@@ -142,29 +147,10 @@ void StereoImageProcessor::imageCallback(image_transport::Publisher& publisher, 
         ROS_ERROR("Could not convert from '%s' to 'bgr8'", image_msg->encoding.c_str());
     }
 
-    double desired_aspect_ratio = static_cast<double>(desired_image_width)/static_cast<double>(desired_image_height);
-    double current_aspect_ratio = static_cast<double>(image_msg->width)/static_cast<double>(image_msg->height);
-   
-    cv::Rect ROI;
-    int crop_x = 0;
-    int crop_y = 0;
-    int width = image_msg->width;
-    int height = image_msg->height;
- 
-    // Want image to be narrower, crop width
-    if (desired_aspect_ratio < current_aspect_ratio) {
-        width = desired_aspect_ratio*image_msg->height;
-        crop_x = (image_msg->width - width)/2;
-        ROI = cv::Rect(crop_x, 0, width, image_msg->height);
-    // Want image to be shorter, crop height
-    } else {
-        height = image_msg->width/desired_aspect_ratio;
-        crop_y = (image_msg->height - height)/2;
-        ROI = cv::Rect(0, crop_y, image_msg->width, height);
-    }
-
+    cv::Rect crop = computeCropRegion(image_msg->width, image_msg->height);
+    
     // Crop
-    cv::Mat cropped = in_image->image(ROI);
+    cv::Mat cropped = in_image->image(crop);
 
     // Scale to desired size while maintaining aspect ratio
     cv::Size size(desired_image_width, desired_image_height);

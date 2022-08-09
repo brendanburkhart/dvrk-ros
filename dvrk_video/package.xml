@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package>
-  <name>dvrk_stereo</name>
-  <version>1.0.0</version>
-  <description>Package to provide calibrated stereo video for the dVRK</description>
+  <name>dvrk_video</name>
+  <version>0.1.0</version>
+  <description>Package to provide calibrated mono or stereo video for the dVRK</description>
 
   <maintainer email="anton.deguet@jhu.edu">Anton Deguet</maintainer>
   <license>cisst</license>

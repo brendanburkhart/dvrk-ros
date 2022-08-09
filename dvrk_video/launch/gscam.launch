@@ -1,0 +1,18 @@
+<!-- -*- mode: XML -*- -->
+
+<launch>
+  <arg name="camera_name" default="camera"/>
+  <arg name="device_name" default="/dev/video0"/>
+  <arg name="camera_params" default="package://dvrk_robot/data/$(arg camera_name).yaml"/>
+  <arg name="frame_id" default="$(arg camera_name)_frame"/>
+
+  <remap from="set_camera_info" to="$(arg camera_name)/set_camera_info"/>
+  <node pkg="gscam" type="gscam" name="$(arg camera_name)">
+    <param name="gscam_config" value="v4l2src device=$(arg device_name) ! video/x-raw ! videoconvert "/>
+    <param name="camera_name" value="$(arg camera_name)" />
+    <param name="camera_info_url" value="$(arg camera_params)" />
+    <param name="frame_id" value="$(arg frame_id)"/> 
+  </node>
+
+</launch>
+

@@ -17,7 +17,7 @@ StereoImageProcessor::StereoImageProcessor(int cv_interpolation_method)
       transport(public_nh)
 { }
 
-void StereoImageProcessor::init() {
+void StereoImageProcessor::onInit() {
     // Get parameters
     private_nh.param("width", desired_image_width, 0);
     private_nh.param("height", desired_image_height, 0);

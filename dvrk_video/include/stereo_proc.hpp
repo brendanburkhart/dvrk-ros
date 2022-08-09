@@ -5,12 +5,13 @@
 #include <string>
 
 #include <ros/ros.h>
+#include <nodelet/nodelet.h>
 #include <image_transport/image_transport.h>
 #include <opencv2/core/types.hpp>
 
 namespace dvrk_stereo {
 
-class StereoImageProcessor {
+class StereoImageProcessor : public nodelet::Nodelet {
 public:
     StereoImageProcessor();
     StereoImageProcessor(int cv_interpolation_method);
@@ -25,6 +26,8 @@ public:
 
 private:
     cv::Rect computeCropRegion(int in_width, int in_height);
+
+    virtual void onInit();
 
     int desired_image_width;
     int desired_image_height;

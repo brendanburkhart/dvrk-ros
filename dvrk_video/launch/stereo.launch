@@ -2,6 +2,11 @@
 
 <!-- Launch stereo camera pipeline for Decklink SDI capture -->
 <launch>
+  <!-- Nodelet manager -->
+  <node pkg="nodelet" type="nodelet"
+    name="(arg rig_name)_stereo_pipeline_manager"
+    args="manager" output="screen"
+  />
 
   <!-- Make sure left/right are correct -->
   <arg name="rig_name" default="dVRK"/>
@@ -11,15 +16,16 @@
   <!-- Arbitrary transform as an example, just need to publish to "/$(arg rig_name)_stereo_frame" -->
   <node ns="$(arg rig_name)" name="stereo_transform" pkg="tf" type="static_transform_publisher" args="0 0 0 0 0 0 /world /$(arg rig_name)_stereo_frame 10"/>
   
-  <!-- left camera driver node -->
-  <include ns="$(arg rig_name)/stereo_raw" file="$(find dvrk_video)/launch/gscam_decklink.launch">
+  <!-- left camera driver nodeket -->
+  <!-- publishes /stereo_raw/left/iamge_rect_color -->
     <arg name="camera_name" value="left"/>
     <arg name="camera_params" value="package://dvrk_config/$(arg rig_name)/left_camera_parameters.yaml"/>
     <arg name="device" value="$(arg left_cam_device)"/>
     <arg name="frame_id" value="$(arg rig_name)_stereo_frame"/>
   </include>
 
-  <!-- camera driver node -->
+  <!-- right camera driver nodelet -->
+  <!-- publishes /stereo_raw/rigt/iamge_rect_color -->
   <include ns="$(arg rig_name)/stereo_raw" file="$(find dvrk_video)/launch/gscam_decklink.launch">
     <arg name="camera_name" value="right"/>
     <arg name="camera_params" value="package://dvrk_config/$(arg rig_name)/right_camera_parameters.yaml"/>
@@ -36,4 +42,9 @@
     <param name="~height" value="640"/>
     <param name="~camera" value="/$(arg rig_name)/stereo_raw"/>
   </node>
+
+  <node ns="$(arg rig_name)" name="$(arg rig_name)_marker_test" pkg="dvrk_stereo" type="rviz_test_marker.py" />
+
+  <node ns="$(arg rig_name)" type="rviz" name="$(arg rig_name)_rviz" pkg="rviz" args="-d $(find dvrk_stereo)/launch/rviz_stereo.rviz" />
+
 </launch>

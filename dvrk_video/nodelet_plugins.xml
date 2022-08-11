@@ -1,0 +1,7 @@
+<library path="lib/libstereo_image_proc">
+  <class name="dvrk_video/StereoImageProc" type="dvrk_video::StereoImageProcessor" base_class_type="nodelet::Nodelet">
+    <description>
+        Nodelet to crop stereo video to fixed aspect ratio
+    </description>
+  </class>
+</library>

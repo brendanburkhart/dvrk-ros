@@ -3,27 +3,32 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc.hpp>
 #include <cv_bridge/cv_bridge.h>
+#include <pluginlib/class_list_macros.h>
 
-namespace dvrk_stereo {
+PLUGINLIB_EXPORT_CLASS(dvrk_video::StereoImageProcessor, nodelet::Nodelet)
+
+namespace dvrk_video {
 
 StereoImageProcessor::StereoImageProcessor() : StereoImageProcessor(cv::INTER_AREA) { }
 
 StereoImageProcessor::StereoImageProcessor(int cv_interpolation_method)
-    : desired_image_width(0),
+    : nodelet::Nodelet(),
+      desired_image_width(0),
       desired_image_height(0),
       input_camera(""),
       cv_interpolation_method(cv_interpolation_method),
-      private_nh("~"),
-      transport(public_nh)
+      transport(ros::NodeHandle())
 { }
 
 void StereoImageProcessor::onInit() {
+    transport = image_transport::ImageTransport(getNodeHandle());
+
     // Get parameters
-    private_nh.param("width", desired_image_width, 0);
-    private_nh.param("height", desired_image_height, 0);
-    bool camera_specified = private_nh.getParam("camera", input_camera);
+    getPrivateNodeHandle().param("width", desired_image_width, 0);
+    getPrivateNodeHandle().param("height", desired_image_height, 0);
+    bool camera_specified = getPrivateNodeHandle().getParam("camera", input_camera);
     if (!camera_specified) {
-        ROS_ERROR("Required parameter '_camera' not specified");
+        ROS_ERROR("Required private parameter 'camera' not specified");
     }
 
     auto left_connect_info = [&](const ros::SingleSubscriberPublisher& _) { connectInfoCallback(left_info_publisher, left_info_subscriber, "left"); };
@@ -34,9 +39,9 @@ void StereoImageProcessor::onInit() {
     // Ensure connectCallback isn't entered before camera publishers are set up completely
     std::lock_guard<std::mutex> lock(transport_setup_mutex);
     left_image_publisher = transport.advertise("left/image", 1, left_connect_image, left_connect_image);
-    left_info_publisher = public_nh.advertise<sensor_msgs::CameraInfo>("left/camera_info", 1, left_connect_info, left_connect_info);
+    left_info_publisher = getNodeHandle().advertise<sensor_msgs::CameraInfo>("left/camera_info", 1, left_connect_info, left_connect_info);
     right_image_publisher = transport.advertise("right/image", 1, right_connect_image, right_connect_image);
-    right_info_publisher = public_nh.advertise<sensor_msgs::CameraInfo>("right/camera_info", 1, right_connect_info, right_connect_info);
+    right_info_publisher = getNodeHandle().advertise<sensor_msgs::CameraInfo>("right/camera_info", 1, right_connect_info, right_connect_info);
 }
 
 void StereoImageProcessor::connectInfoCallback(ros::Publisher& publisher, ros::Subscriber& subscriber, std::string side) {
@@ -47,7 +52,7 @@ void StereoImageProcessor::connectInfoCallback(ros::Publisher& publisher, ros::S
     } else if (!subscriber) {
         // Bind callback to specific left/right publisher
         auto info_callback = [&](const sensor_msgs::CameraInfoConstPtr& msg) { infoCallback(publisher, msg); };
-        subscriber = public_nh.subscribe<sensor_msgs::CameraInfo>(input_camera + "/" + side + "/camera_info", 1, info_callback);
+        subscriber = getNodeHandle().subscribe<sensor_msgs::CameraInfo>(input_camera + "/" + side + "/camera_info", 1, info_callback);
     }
 }
 
@@ -161,16 +166,3 @@ void StereoImageProcessor::imageCallback(image_transport::Publisher& publisher, 
 }
 
 }
-
-int main(int argc, char **argv) {
-    ros::init(argc, argv, "stereo_proc");
-    
-    dvrk_stereo::StereoImageProcessor stereo_processor;
-    stereo_processor.init();
-
-    ros::spin();
-
-    return 0;
-}
-
-

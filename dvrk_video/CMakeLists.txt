@@ -35,6 +35,5 @@ find_package (OpenCV REQUIRED)
 
 include_directories (include ${catkin_INCLUDE_DIRS} ${OpenCV_INCLUDE_DIRS})
 
-add_executable (${PROJECT_NAME} src/stereo_proc.cpp)
-target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
-
+add_library (stereo_image_proc src/stereo_proc.cpp)
+target_link_libraries (stereo_image_proc ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})

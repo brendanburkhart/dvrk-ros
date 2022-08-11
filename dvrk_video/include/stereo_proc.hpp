@@ -1,5 +1,5 @@
-#ifndef DVRK_STEREO_PROC
-#define DVRK_STEREO_PROC
+#ifndef DVRK_VIDEO_STEREO_PROC
+#define DVRK_VIDEO_STEREO_PROC
 
 #include <mutex>
 #include <string>
@@ -9,15 +9,13 @@
 #include <image_transport/image_transport.h>
 #include <opencv2/core/types.hpp>
 
-namespace dvrk_stereo {
+namespace dvrk_video {
 
 class StereoImageProcessor : public nodelet::Nodelet {
 public:
     StereoImageProcessor();
     StereoImageProcessor(int cv_interpolation_method);
 
-    void init();
-    
     void connectInfoCallback(ros::Publisher& publisher, ros::Subscriber& subscriber, std::string side);
     void connectImageCallback(image_transport::Publisher& publisher, image_transport::Subscriber& subscriber, std::string side);
 
@@ -34,9 +32,6 @@ private:
     std::string input_camera;
 
     int cv_interpolation_method;
-
-    ros::NodeHandle public_nh;
-    ros::NodeHandle private_nh;
 
     image_transport::ImageTransport transport;
     image_transport::Publisher left_image_publisher, right_image_publisher;

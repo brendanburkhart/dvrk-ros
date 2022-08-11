@@ -4,10 +4,10 @@
   <!-- Macros -->
   <xacro:include filename="$(find dvrk_model)/model/psm.urdf.xacro"/>
 
-  <link name="world"/>
+  <link name="PSM2_base"/>
   <xacro:psm_caudier
       prefix="PSM2_"
-      parent_link="world"
-      xyz="0.25 0.0 0.5" rpy="0.0 0.0 -3.1415926"/>
+      parent_link="PSM2_base"
+      xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
 
 </robot>

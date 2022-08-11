@@ -3,8 +3,8 @@
 <!-- Launch stereo camera pipeline for Decklink SDI capture -->
 <launch>
   <!-- Nodelet manager -->
-  <node pkg="nodelet" type="nodelet"
-    name="(arg rig_name)_stereo_pipeline_manager"
+  <node ns="$(arg rig_name)" pkg="nodelet" type="nodelet"
+    name="stereo_pipeline_manager"
     args="manager" output="screen"
   />
 
@@ -13,15 +13,14 @@
   <arg name="left_cam_device" default="1"/>
   <arg name="right_cam_device" default="0"/>
 
-  <!-- Arbitrary transform as an example, just need to publish to "/$(arg rig_name)_stereo_frame" -->
-  <node ns="$(arg rig_name)" name="stereo_transform" pkg="tf" type="static_transform_publisher" args="0 0 0 0 0 0 /world /$(arg rig_name)_stereo_frame 10"/>
-  
   <!-- left camera driver nodeket -->
   <!-- publishes /stereo_raw/left/iamge_rect_color -->
+  <include ns="$(arg rig_name)/stereo_raw" file="$(find dvrk_video)/launch/gscam_decklink.launch">
     <arg name="camera_name" value="left"/>
     <arg name="camera_params" value="package://dvrk_config/$(arg rig_name)/left_camera_parameters.yaml"/>
     <arg name="device" value="$(arg left_cam_device)"/>
-    <arg name="frame_id" value="$(arg rig_name)_stereo_frame"/>
+    <arg name="frame_id" value="$(arg rig_name)_stereo_camera"/>
+    <arg name="nodelet_manager" value="/$(arg rig_name)/stereo_pipeline_manager"/>
   </include>
 
   <!-- right camera driver nodelet -->
@@ -30,21 +29,8 @@
     <arg name="camera_name" value="right"/>
     <arg name="camera_params" value="package://dvrk_config/$(arg rig_name)/right_camera_parameters.yaml"/>
     <arg name="device" value="$(arg right_cam_device)"/>
-    <arg name="frame_id" value="$(arg rig_name)_stereo_frame"/>
+    <arg name="frame_id" value="$(arg rig_name)_stereo_camera"/>
+    <arg name="nodelet_manager" value="/$(arg rig_name)/stereo_pipeline_manager"/>
   </include>
-
-  <node ns="$(arg rig_name)/stereo_raw" name="$(arg rig_name)_stereo_proc" pkg="stereo_image_proc" type="stereo_image_proc">
-    <param name="_approximate_sync" value="True"/>
-  </node>
-  
-  <node ns="$(arg rig_name)/stereo_processed" name="$(arg rig_name)_stereo_resize" pkg="dvrk_video" type="dvrk_video">
-    <param name="~width" value="1280"/>
-    <param name="~height" value="640"/>
-    <param name="~camera" value="/$(arg rig_name)/stereo_raw"/>
-  </node>
-
-  <node ns="$(arg rig_name)" name="$(arg rig_name)_marker_test" pkg="dvrk_stereo" type="rviz_test_marker.py" />
-
-  <node ns="$(arg rig_name)" type="rviz" name="$(arg rig_name)_rviz" pkg="rviz" args="-d $(find dvrk_stereo)/launch/rviz_stereo.rviz" />
 
 </launch>

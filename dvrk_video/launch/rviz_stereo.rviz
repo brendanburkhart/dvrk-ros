@@ -4,6 +4,8 @@ Panels:
     Name: Displays
     Property Tree Widget:
       Expanded:
+        - /Camera1
+        - /Camera2
         - /Camera2/Visibility1
       Splitter Ratio: 0.5
     Tree Height: 391
@@ -54,7 +56,7 @@ Visualization Manager:
     - Class: rviz/Camera
       Enabled: true
       Image Rendering: background and overlay
-      Image Topic: /jhu_daVinci/stereo_processed/left/image
+      Image Topic: /jhu_daVinci/stereo_raw/left/image_rect_color
       Name: Camera
       Overlay Alpha: 0
       Queue Size: 2
@@ -71,7 +73,7 @@ Visualization Manager:
     - Class: rviz/Camera
       Enabled: true
       Image Rendering: background and overlay
-      Image Topic: /jhu_daVinci/stereo_processed/right/image
+      Image Topic: /jhu_daVinci/stereo_raw/right/image_rect_color
       Name: Camera
       Overlay Alpha: 0
       Queue Size: 2
@@ -158,9 +160,9 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.1252036839723587
+      Pitch: -1.2897969484329224
       Target Frame: <Fixed Frame>
-      Yaw: 1.5453956127166748
+      Yaw: 2.825395345687866
     Saved: ~
 Window Geometry:
   Camera:

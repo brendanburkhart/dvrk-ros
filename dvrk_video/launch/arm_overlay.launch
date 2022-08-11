@@ -1,0 +1,15 @@
+<launch>
+  <arg name="arm"/>
+  <arg name="reference"/>
+  <arg name="camera"/>
+
+  <include file="$(find dvrk_video)/launch/arm.launch">
+    <arg name="arm" value="$(arg arm)"/>
+    <arg name="reference" value="$(arg reference)"/>
+    <arg name="camera" value="$(arg camera)"/>
+  </include>
+
+  <node name="rviz" pkg="rviz" type="rviz"
+     args="-d $(find dvrk_model)/rviz_config/$(arg arm).rviz"/>
+
+</launch>

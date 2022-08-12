@@ -18,10 +18,11 @@
       <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher"/>
       <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/>
 
-      <node name="transform_compute" pkg="dvrk_video" type="transform_compute.py" output="screen">
+      <node name="transform_compute" pkg="dvrk_video" type="compute_reference_frame.py" output="screen">
         <param name="arm" value="$(arg arm)"/>
         <param name="reference" value="$(arg reference)"/>
-        <param name="camera" value="$(arg camera)"/>
+        <param name="subject" value="$(arg camera)"/>
+        <param name="target" value="$(arg arm)_base"/>
       </node>
   </group>
 </launch>

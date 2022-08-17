@@ -21,9 +21,8 @@ class ReferenceFrameBroadcaster:
     subject and target frames.
     """
 
-    def __init__(self, arm_name, reference_frame, subject_frame, target_frame):
+    def __init__(self, arm_name, subject_frame, target_frame):
         self.arm_name = arm_name
-        self.reference_frame = reference_frame
         self.subject_frame = subject_frame
         self.target_frame = target_frame
 
@@ -98,11 +97,10 @@ def main():
     rospy.init_node("compute_reference_frame")
 
     arm_name = rospy.get_param("~arm")
-    reference = rospy.get_param("~reference")
-    subject = rospy.get_param("~subject")
-    target = rospy.get_param("~target")
+    subject = rospy.get_param("~subject_frame")
+    target = rospy.get_param("~target_frame")
 
-    broadcaster = ReferenceFrameBroadcaster(arm_name, reference, subject, target)
+    broadcaster = ReferenceFrameBroadcaster(arm_name, subject, target)
     broadcaster.run()
 
 

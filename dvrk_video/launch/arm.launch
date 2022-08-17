@@ -1,7 +1,6 @@
 <launch>
   <arg name="arm"/>
-  <arg name="reference"/>
-  <arg name="camera"/>
+  <arg name="camera_frame"/>
   <arg name="model" default="$(find dvrk_model)/model/$(arg arm).urdf.xacro"/>
   <arg name="rate" default="20"/>
 
@@ -20,9 +19,8 @@
 
       <node name="transform_compute" pkg="dvrk_video" type="compute_reference_frame.py" output="screen">
         <param name="arm" value="$(arg arm)"/>
-        <param name="reference" value="$(arg reference)"/>
-        <param name="subject" value="$(arg camera)"/>
-        <param name="target" value="$(arg arm)_base"/>
+        <param name="subject_frame" value="$(arg camera_frame)"/>
+        <param name="target_frame" value="$(arg arm)_base"/>
       </node>
   </group>
 </launch>

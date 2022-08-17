@@ -1,19 +1,16 @@
 <launch>
   <arg name="arm1"/>
   <arg name="arm2"/>
-  <arg name="reference"/>
-  <arg name="camera"/>
+  <arg name="camera_frame"/>
 
   <include file="$(find dvrk_video)/launch/arm.launch">
     <arg name="arm" value="$(arg arm1)"/>
-    <arg name="reference" value="$(arg reference)"/>
-    <arg name="camera" value="$(arg camera)"/>
+    <arg name="camera_frame" value="$(arg camera_frame)"/>
   </include>
 
   <include file="$(find dvrk_video)/launch/arm.launch">
     <arg name="arm" value="$(arg arm2)"/>
-    <arg name="reference" value="$(arg reference)"/>
-    <arg name="camera" value="$(arg camera)"/>
+    <arg name="camera_frame" value="$(arg camera_frame)"/>
   </include>
 
   <node name="rviz" pkg="rviz" type="rviz"

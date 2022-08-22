@@ -1,19 +1,29 @@
 <launch>
   <arg name="arm1"/>
   <arg name="arm2"/>
-  <arg name="camera_frame"/>
+  <arg name="camera_name"/>
+  <arg name="camera_frame" default="$(arg camera_name)_frame"/>
 
   <include file="$(find dvrk_video)/launch/arm.launch">
     <arg name="arm" value="$(arg arm1)"/>
+    <arg name="alias" value="arm1"/>
     <arg name="camera_frame" value="$(arg camera_frame)"/>
   </include>
 
   <include file="$(find dvrk_video)/launch/arm.launch">
     <arg name="arm" value="$(arg arm2)"/>
+    <arg name="alias" value="arm2"/>
     <arg name="camera_frame" value="$(arg camera_frame)"/>
   </include>
 
-  <node name="rviz" pkg="rviz" type="rviz"
-     args="-d $(find dvrk_video)/rviz/dual_rviz.rviz"/>
+  <!-- RViz config has fixed frame set to "world", but we want it to be the camera's frame -->
+  <node pkg="tf" type="static_transform_publisher" name="fixed_frame_transform" args="0 0 0 0 0 0 /world /$(arg camera_frame) 100"/>
 
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find dvrk_video)/rviz_config/stereo.rviz">
+    <!-- RViz config camera topic are fixed, so we remap to match -->
+    <remap from="/stereo/left/image_rect_color" to="/$(arg camera_name)/left/image_rect_color"/>
+    <remap from="/stereo/left/camera_info" to="/$(arg camera_name)/left/camera_info"/>
+    <remap from="/stereo/right/image_rect_color" to="/$(arg camera_name)/right/image_rect_color"/>
+    <remap from="/stereo/right/camera_info" to="/$(arg camera_name)/right/camera_info"/>
+  </node>
 </launch>

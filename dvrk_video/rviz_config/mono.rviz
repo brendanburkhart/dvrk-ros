@@ -64,109 +64,6 @@ Visualization Manager:
         Expand Link Details: false
         Expand Tree: false
         Link Tree Style: Links in Alphabetic Order
-        PSM1_base:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        PSM1_outer_insertion_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        PSM1_outer_pitch_back_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        PSM1_outer_pitch_bottom_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        PSM1_outer_pitch_front_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        PSM1_outer_pitch_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        PSM1_outer_pitch_top_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        PSM1_outer_yaw_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        PSM1_psm_base_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        PSM1_tool_main_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        PSM1_tool_wrist_caudier_ee_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        PSM1_tool_wrist_caudier_ee_link_0:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        PSM1_tool_wrist_caudier_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        PSM1_tool_wrist_caudier_link_2_left:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        PSM1_tool_wrist_caudier_link_2_right:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        PSM1_tool_wrist_caudier_link_shaft:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        PSM1_tool_wrist_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        PSM1_tool_wrist_shaft_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-      Name: RobotModel
-      Robot Description: /PSM1/robot_description
-      TF Prefix: ""
-      Update Interval: 0
-      Value: true
-      Visual Enabled: true
-    - Alpha: 1
-      Class: rviz/RobotModel
-      Collision Enabled: false
-      Enabled: true
-      Links:
-        All Links Enabled: true
-        Expand Joint Details: false
-        Expand Link Details: false
-        Expand Tree: false
-        Link Tree Style: Links in Alphabetic Order
         PSM2_base:
           Alpha: 1
           Show Axes: false
@@ -255,7 +152,7 @@ Visualization Manager:
           Show Trail: false
           Value: true
       Name: RobotModel
-      Robot Description: /PSM2/robot_description
+      Robot Description: /arm/robot_description
       TF Prefix: ""
       Update Interval: 0
       Value: true
@@ -263,7 +160,7 @@ Visualization Manager:
     - Class: rviz/Camera
       Enabled: true
       Image Rendering: background and overlay
-      Image Topic: /jhu_dVRK/stereo_raw/left/image_rect_color
+      Image Topic: /camera/image_rect_color
       Name: Camera
       Overlay Alpha: 0.5
       Queue Size: 2
@@ -279,7 +176,7 @@ Visualization Manager:
   Global Options:
     Background Color: 48; 48; 48
     Default Light: true
-    Fixed Frame: jhu_dVRK_stereo_camera
+    Fixed Frame: world
     Frame Rate: 30
   Name: root
   Tools:
@@ -303,7 +200,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 2.190875768661499
+      Distance: 10
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -319,9 +216,9 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: -0.5247971415519714
+      Pitch: 0.785398006439209
       Target Frame: <Fixed Frame>
-      Yaw: 4.741762638092041
+      Yaw: 0.785398006439209
     Saved: ~
 Window Geometry:
   Camera:

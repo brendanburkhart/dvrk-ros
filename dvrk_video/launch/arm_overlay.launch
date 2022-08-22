@@ -1,13 +1,20 @@
 <launch>
   <arg name="arm"/>
-  <arg name="camera_frame"/>
+  <arg name="camera_name"/>
+  <arg name="camera_frame" default="$(arg camera_name)_frame"/>
 
   <include file="$(find dvrk_video)/launch/arm.launch">
     <arg name="arm" value="$(arg arm)"/>
+    <arg name="alias" value="arm"/>
     <arg name="camera_frame" value="$(arg camera_frame)"/>
   </include>
 
-  <node name="rviz" pkg="rviz" type="rviz"
-     args="-d $(find dvrk_model)/rviz_config/$(arg arm).rviz"/>
+  <!-- RViz config has fixed frame set to "world", but we want it to be the camera's frame -->
+  <node pkg="tf" type="static_transform_publisher" name="fixed_frame_transform" args="0 0 0 0 0 0 /world /$(arg camera_frame) 100"/>
 
+  <node name="rviz" pkg="rviz" type="rviz"
+     args="-d $(find dvrk_video)/rviz_config/mono.rviz">
+    <remap from="/camera/image_rect_color" to="/$(arg camera_name)/image_rect_color"/>
+    <remap from="/camera/camera_info" to="/$(arg camera_name)/camera_info"/>
+  </node>
 </launch>

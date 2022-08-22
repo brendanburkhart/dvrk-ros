@@ -1,10 +1,11 @@
 <launch>
   <arg name="arm"/>
+  <arg name="alias"/>
   <arg name="camera_frame"/>
   <arg name="model" default="$(find dvrk_model)/model/$(arg arm).urdf.xacro"/>
   <arg name="rate" default="20"/>
 
-  <group ns="$(arg arm)">
+  <group ns="$(arg alias)">
       <param name="robot_description" command="rosrun xacro xacro $(arg model) prefix:=$(arg arm)_"/>
       <param name="rate" value="$(arg rate)"/>
 

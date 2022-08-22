@@ -3,15 +3,14 @@
 <launch>
   <arg name="rig_name" default="dVRK"/>
   <arg name="camera_name" default="$(arg rig_name)_camera"/>
+  <arg name="device_name" default="/dev/video0"/>
   
   <include file="$(find dvrk_video)/launch/gscam.launch">
     <arg name="camera_name" value="$(arg camera_name)"/>
+    <arg name="device_name" value="$(arg device_name)"/>
     <arg name="camera_params" value="package://dvrk_config/$(arg rig_name)/mono_camera_parameters.yaml"/>
-    <arg name="frame_id" value="camera"/>
+    <arg name="frame_id" value="$(arg camera_name)_frame"/>
   </include>
 
-  <node ns="$(arg camera_name)" name="$(arg rig_name)_image_proc" pkg="image_proc" type="image_proc"/>
-  <node ns="$(arg camera_name)" name="$(arg rig_name)_tf" pkg="dvrk_video" type="transform_compute.py" output="screen"/>
-  
+  <node ns="$(arg camera_name)" name="image_proc" pkg="image_proc" type="image_proc"/>
 </launch>
-

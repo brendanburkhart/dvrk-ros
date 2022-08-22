@@ -1,0 +1,13 @@
+<launch>
+  <arg name="w"/>
+  <arg name="h"/>
+  <arg name="size"/>
+  <arg name="rig_name"/>
+  <arg name="camera_name" default="$(arg rig_name)_stereo"/>
+  <arg name="pattern" default="chessboard"/>
+
+  <node name="calibrator" pkg="camera_calibration" type="cameracalibrator.py" output="screen"
+    args="-s $(arg w)x$(arg h) -q $(arg size) -p $(arg pattern) --approximate=0.05
+          right:=/$(arg camera_name)/right/image_raw right_camera:=/$(arg camera_name)/right
+          left:=/$(arg camera_name)/left/image_raw left_camera:=/$(arg camera_name)/left"/>
+</launch>

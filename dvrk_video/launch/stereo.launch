@@ -10,26 +10,27 @@
 
   <!-- Make sure left/right are correct -->
   <arg name="rig_name" default="dVRK"/>
+  <arg name="stereo_camera_name" default="$(arg rig_name)_stereo"/>
   <arg name="left_cam_device" default="1"/>
   <arg name="right_cam_device" default="0"/>
 
   <!-- left camera driver nodeket -->
-  <!-- publishes /stereo_raw/left/iamge_rect_color -->
-  <include ns="$(arg rig_name)/stereo_raw" file="$(find dvrk_video)/launch/gscam_decklink.launch">
+  <!-- publishes /<stereo_camera_name>/left/image_rect_color -->
+  <include ns="$(arg stereo_camera_name)" file="$(find dvrk_video)/launch/gscam_decklink.launch">
     <arg name="camera_name" value="left"/>
     <arg name="camera_params" value="package://dvrk_config/$(arg rig_name)/left_camera_parameters.yaml"/>
     <arg name="device" value="$(arg left_cam_device)"/>
-    <arg name="frame_id" value="$(arg rig_name)_stereo_camera"/>
+    <arg name="frame_id" value="$(arg stereo_camera_name)_frame"/>
     <arg name="nodelet_manager" value="/$(arg rig_name)/stereo_pipeline_manager"/>
   </include>
 
   <!-- right camera driver nodelet -->
-  <!-- publishes /stereo_raw/rigt/iamge_rect_color -->
-  <include ns="$(arg rig_name)/stereo_raw" file="$(find dvrk_video)/launch/gscam_decklink.launch">
+  <!-- publishes /<stereo_camera_name>/right/image_rect_color -->
+  <include ns="$(arg stereo_camera_name)" file="$(find dvrk_video)/launch/gscam_decklink.launch">
     <arg name="camera_name" value="right"/>
     <arg name="camera_params" value="package://dvrk_config/$(arg rig_name)/right_camera_parameters.yaml"/>
     <arg name="device" value="$(arg right_cam_device)"/>
-    <arg name="frame_id" value="$(arg rig_name)_stereo_camera"/>
+    <arg name="frame_id" value="$(arg stereo_camera_name)_frame"/>
     <arg name="nodelet_manager" value="/$(arg rig_name)/stereo_pipeline_manager"/>
   </include>
 

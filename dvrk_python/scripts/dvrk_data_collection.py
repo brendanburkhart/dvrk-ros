@@ -18,12 +18,25 @@ import crtk
 import dvrk
 import sys
 import csv
+import std_msgs.msg
 
 class clutch_offset:
     def __init__(self, ral, expected_interval):
         self._crtk_utils = crtk.utils(self, ral, expected_interval)
         self._crtk_utils.add_measured_cp()
         self._ral = ral
+
+class contact:
+    def __init__(self, ral, expected_interval):
+        self._ral = ral
+        self._value = False
+        self._contact_sub = self._ral.subscriber("contact", std_msgs.msg.Bool, self._contact_cb)
+
+    def _contact_cb(self, value):
+        self._value = value
+
+    def has_contact(self):
+        return self._value.data
 
 class force_sensor:
     def __init__(self, ral, expected_interval):
@@ -47,6 +60,7 @@ class data_collection:
         self.psm_initial = clutch_offset(ral.create_child("MTML_PSM2/PSM/initial"), expected_interval)
         self.mtm_initial = clutch_offset(ral.create_child("MTML_PSM2/MTM/initial"), expected_interval)
         self.force_sensor = force_sensor(ral.create_child("force_sensor"), expected_interval)
+        self.psm_contact = contact(self.psm._ral, expected_interval)
 
     def collect(self, csv_writer):
         rate = self.ral.create_rate(500)
@@ -70,6 +84,9 @@ class data_collection:
             data.extend(self.mtm.external.measured_cf())
 
             data.extend(self.force_sensor.measured_cf())
+
+            has_contact = self.psm_contact.has_contact()
+            data.append(1 if has_contact else 0)
 
             csv_writer.writerow(data)
 
